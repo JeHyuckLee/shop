@@ -2,20 +2,28 @@ import { useState } from 'react';
 import {Button,Form, Navbar, Container,Nav} from 'react-bootstrap';
 import './App.css';
 import data from "./data";
-
+import {Routes,Route,Link, useNavigate, Outlet} from 'react-router-dom'
+import DetailPage from './pages/Detail'
+import Card from './component/Card';
 
 
 function App() {
 
   let[shoes] = useState(data);
+  let navigate = useNavigate()
+  // navigate(-1) = 뒤로가기  1 = 앞으로가기  
 
   return (
     <div className="App">
+    
       <Navbar bg="light" variant="light">
         <Container>
           <Navbar.Brand href="#home">Market</Navbar.Brand>
           <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
+
+            <Nav.Link href="#home" onClick={()=>{
+              navigate('/')
+            }}>Home</Nav.Link>
             <Nav.Link href="#features">Cart</Nav.Link>
             {/* <Nav.Link href="#pricing">Pricing</Nav.Link> */}
           </Nav>
@@ -31,45 +39,71 @@ function App() {
         </Container>
       </Navbar>
 
-      <div className='main-bg'>
-      </div>
+      <Link to="detail">상세페이지</Link>
 
-      <div className='container'>
+      <Routes>
+        <Route path="/" element={
+          <>
+          <div className='main-bg'>
+          </div>
+    
+          <div className='container'>           
+            <div className='row'>
+              {
+                shoes.map((shoes,i)=>{
+                  return(
+                    <Card shoes={shoes} i={i}></Card>
+                  )
+                  
+                })
+              }
+            </div>
+    
+          </div>
+          </>
+        }></Route>
+        <Route path='/detail' element={<DetailPage shoes={shoes}/>}>
+          {/* <Route path='locaton' element={<DetailPage}>
+            Nested Route
+            여러 유사한 페이지 필요할때 사용
+            <outlet></outlet> 페이지 이동이 쉬움
+          </Route> */}
+        </Route>
+
+        <Route path='/event' element={<EvnetPage/>}>
+          <Route path='one' element={
+            <div>
+              <p>첫 주문시 양배추즙 서비스</p>
+            </div>
+          }/>
+          <Route path='two' element={
+            <div>
+              <p>생일기념 쿠폰받기</p>
+            </div>
+          }/>
+        </Route>
 
         
-        <div className='row'>
-          <div className='col-md-4'>
-          <img src="https://codingapple1.github.io/shop/shoes1.jpg" alt="shoes" width="70%"/>
-          <h4>상품명</h4>
-          <p>상품설명</p>
-          </div>
-          <div className='col-md-4'>
-          <img src="https://codingapple1.github.io/shop/shoes2.jpg" alt="shoes" width="80%"/>
-          <h4>상품명</h4>
-          <p>상품설명</p>
-          </div>
-          <div className='col-md-4'>
-          <img src="https://codingapple1.github.io/shop/shoes3.jpg" alt="shoes" width="80%"/>
-          <h4>상품명</h4>
-          <p>상품설명</p>
-          </div>
-        </div>
+        {/* <Route path='*'>
+          정의된경로외 모든경로 => not found 404
+        </Route> */}
+      </Routes>
 
       </div>
-
-    </div>
   );
 }
 
-function shoes(props){
-  let url = `https://codingapple1.github.io/shop/shoes${index+1}.jpg`
+function EvnetPage(){
+
   return(
-    <div className='col-md-4'>
-    <img src={url} alt="shoes" width="80%"/>
-    <h4>item[index].title</h4>
-    <p>item[index].price</p>
+    <div>
+      <h4>오늘의 이벤트</h4>
+      <Outlet></Outlet>
     </div>
-  );
+  )
 }
+
+
+
 
 export default App;
